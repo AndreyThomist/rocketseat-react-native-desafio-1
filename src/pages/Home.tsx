@@ -5,20 +5,48 @@ import { Header } from '../components/Header';
 import { Task, TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
 
+
+
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   function handleAddTask(newTaskTitle: string) {
-    //TODO - add new task
+      if(newTaskTitle == ''){
+        return;
+      }else{
+        const newTasksArray = [...tasks]
+        if (tasks.length > 0) {
+          newTasksArray.push({
+            id: newTasksArray[newTasksArray.length - 1].id + 1,
+            title: newTaskTitle,
+            done: false
+          })
+          setTasks(newTasksArray);
+        } else {
+          newTasksArray.push({
+            id: 1,
+            title: newTaskTitle,
+            done: false
+          })
+          setTasks(newTasksArray);
+        }
+      }
+      
   }
 
   function handleToggleTaskDone(id: number) {
-    //TODO - toggle task done if exists
+    const newArrayTasks = [...tasks];
+    let indexTask = tasks.findIndex(task => task.id === id);
+    newArrayTasks[indexTask].done = !newArrayTasks[indexTask].done;
+    setTasks(newArrayTasks);
   }
 
   function handleRemoveTask(id: number) {
-    //TODO - remove task from state
+    let newArrayTasks = [...tasks];
+    newArrayTasks = newArrayTasks.filter(task => task.id !== id)
+    setTasks(newArrayTasks);
   }
+
 
   return (
     <View style={styles.container}>
@@ -26,13 +54,14 @@ export function Home() {
 
       <TodoInput addTask={handleAddTask} />
 
-      <TasksList 
-        tasks={tasks} 
+      <TasksList
+        tasks={tasks}
         toggleTaskDone={handleToggleTaskDone}
-        removeTask={handleRemoveTask} 
+        removeTask={handleRemoveTask}
       />
     </View>
   )
+
 }
 
 const styles = StyleSheet.create({
